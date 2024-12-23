@@ -1,0 +1,42 @@
+/* Styles for the entire app component */
+
+:host {
+    display: block;
+    font-family: 'Arial', sans-serif;
+}
+
+
+/* Simple styling for the navigation bar */
+
+nav {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 10px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+
+/* Additional styling for the router outlet and its components */
+
+router-outlet {
+    margin: 20px;
+}
