@@ -1,7 +1,9 @@
-<!-- login.component.html -->
-<form (submit)="onSubmit()">
-    <input type="text" [(ngModel)]="username" name="username" required placeholder="Username">
-    <input type="password" [(ngModel)]="password" name="password" required placeholder="Password">
-    <button type="submit">Login</button>
-    <p *ngIf="errorMessage">{{ errorMessage }}</p>
+<form [formGroup]="connectionForm" (ngSubmit)="connexion()">
+    <label for="username">Nom d'utilisateur :</label>
+    <input id="username" formControlName="username" />
+
+    <label for="password">Mot de passe :</label>
+    <input id="password" type="password" formControlName="password" />
+
+    <button type="submit">Connexion</button>
 </form>

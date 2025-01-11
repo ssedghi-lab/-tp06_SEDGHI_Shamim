@@ -1,13 +1,14 @@
-import { enableProdMode } from '@angular/core';
-import { environment } from './environments/environment';
 import { bootstrapApplication } from '@angular/platform-browser';
+import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
 import { provideHttpClient } from '@angular/common/http';
+import { importProvidersFrom } from '@angular/core';
+import { PanierState } from './app/shared/states/panier.state';
+import { NgxsModule } from '@ngxs/store';
 
-if (environment.production) {
-  enableProdMode();
-}
-
-bootstrapApplication(AppComponent, {
-  providers: [provideHttpClient()]
-}).catch(err => console.error(err));
+bootstrapApplication(AppComponent, {providers: [...appConfig.providers,provideHttpClient(),
+  importProvidersFrom(NgxsModule.forRoot([PanierState])),
+  
+]})
+  .catch((err) => console.error(err));
+  

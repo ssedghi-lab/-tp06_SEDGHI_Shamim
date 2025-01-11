@@ -1,44 +1,36 @@
 const express = require("express");
 const cors = require("cors");
-const { createProxyMiddleware } = require('http-proxy-middleware');
-const exec = require("child_process").exec;
-const utilisateurControllers = require("./user.controllers");
-const productRoutes = require('./productRoutes');
-
-exec("cd FRONTEND && my-angular-app && ng serve");
-
+const path = require('path');
 const app = express();
 
-// CORS options setup
+// Configuration des CORS
 const corsOptions = {
-    origin: "http://localhost:4200",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    headers: "Content-Type, Authorization",
-    exposedHeaders: "Authorization",
+    origin: "*",
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: "Content-Type, Authorization",
+    exposedHeaders: 'Authorization'
 };
 
-// Apply JSON and URL-encoded middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(cors(corsOptions)); // Middleware CORS
+app.use(express.json()); // Support JSON
+app.use(express.urlencoded({ extended: true })); // Support URL-encoded data
+// Chargement des routes API
+require("./routes/product.routes")(app);
+require("./routes/user.routes")(app);
 
-// Apply CORS middleware
-app.use(cors(corsOptions));
+// Route de base
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+});
 
-// Routes for products and user controllers
-app.use('/api', productRoutes);
-app.post("/api/login", utilisateurControllers.login);
-app.post("/api/register", utilisateurControllers.register);
-app.post("/api/disconnect", utilisateurControllers.disconnect);
-app.post("/api/updateProfil", utilisateurControllers.updateProfil);
+// Gestion des fichiers statiques
+app.use(express.static(path.join(__dirname, 'FRONTEND/dist/my-angular-app')));
 
-// Finally, setup the proxy middleware at the end of all routes
-app.use('*', createProxyMiddleware({
-    target: 'http://localhost:4200',
-    changeOrigin: true,
-    logLevel: 'debug' // Adding debug logs can help diagnose issues with the proxy.
-}));
-
-// Start the server
+// Catch-all pour Angular
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'FRONTEND/dist/my-angular-app/index.html'));
+});
+// Démarrage du serveur
 const port = 3000;
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
